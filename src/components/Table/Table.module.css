@@ -1,0 +1,110 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  overflow: hidden;
+  outline: 1px solid var(--border-color);
+  background-color: var(--panel-color);
+}
+
+.tableScroll {
+  width: 100%;
+  overflow: auto;
+  scrollbar-color: #ccc white;
+  scrollbar-width: thin;
+}
+
+.table {
+  min-width: 100%;
+  width: max-content;
+  border-radius: 5px;
+}
+
+/* HEADERS */
+.table thead {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  color: #666;
+  outline: 1px solid #ccc;
+  background-color: white;
+  font-size: 15px;
+}
+
+.table thead th {
+  text-align: left;
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* .table td { */
+/*   width:  50%; */
+/* } */
+
+/* BODY */
+.table tbody tr {
+  width: max-content;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table tbody tr td {
+  width: max-content;
+  padding: 10px 15px;
+}
+
+/* BUTTONS */
+.table .buttons {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+}
+
+.table button {
+  background-color: transparent;
+  border: none;
+}
+
+.table button img {
+  max-width: 20px;
+  height: 20px;
+  transition: 0.2s;
+}
+
+.table button:hover {
+  background-color: #ccc;
+}
+
+.actions button {
+  outline: 1px solid #ccc;
+}
+
+.table td:last-child button:last-child img {
+  filter: invert(28%) sepia(73%) saturate(7153%) hue-rotate(353deg)
+    brightness(94%) contrast(125%);
+}
+
+/* FOOTER */
+.table tfoot {
+  flex: 0 0 auto; /* Evita que el tfoot se estire */
+  position: sticky;
+  bottom: 0; /* Fija el footer en la parte inferior */
+  z-index: 1; /* Asegura que el tfoot esté encima del tbody */
+}
+
+.table tfoot tr {
+  display: table-row; /* Asegura que las filas del tfoot se comporten como filas de tabla */
+  color: white;
+  background-color: var(--panel);
+}
+
+.table tfoot tr td {
+  text-align: end;
+  padding: 5px 10px;
+  display: table-cell; /* Asegura que las celdas se comporten como celdas de tabla */
+}
+
+.empty {
+  padding: 30px;
+  text-align: center;
+}

@@ -1,0 +1,30 @@
+.pagination {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 5px;
+  outline: 1px solid var(--border-color);
+  background-color: white;
+}
+
+.pagination .buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination button {
+  border: none;
+  color: grey;
+  background-color: white;
+}
+
+.pagination button {
+  padding: 8px 12px;
+}
+
+.pagination button:hover {
+  background-color: #4442;
+}
