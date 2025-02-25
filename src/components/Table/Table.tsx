@@ -4,9 +4,10 @@ import Pagination from "./Pagination/Pagination";
 
 import styles from "./Table.module.css";
 
-interface Column {
+interface Column<T> {
   header: string;
   key: string;
+  render?: (data: T) => React.ReactNode;
 }
 
 interface Action<T> {
@@ -16,7 +17,7 @@ interface Action<T> {
 }
 
 interface Props<T> {
-  columns: Column[];
+  columns: Column<T>[];
   data: Array<T>;
   actions?: Action<T>[];
 }
@@ -52,7 +53,7 @@ export default function Table<T>({ columns, data, actions }: Props<T>) {
                   {/* Add data */}
                   {columns.map((column, colIndex) => (
                     <td key={colIndex}>
-                      {row[column.key as keyof typeof data.keys]}
+                      {column.render ? column.render(row) : row[column.key as keyof typeof data.keys]}
                     </td>
                   ))}
 

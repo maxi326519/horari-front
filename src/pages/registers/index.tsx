@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FilterConfig } from "../../components/Filters/Filters";
 import { useRegister } from "../../hooks/useRegister";
 import { Register } from "../../interfaces/Register";
+import formatDateToDDMMYY from "../../scripts/formatDateToDDMMYY";
 
 import Table from "../../components/Table/Table";
 import Dashboard from "../../components/Dashboard/Dashboard";
@@ -10,13 +11,33 @@ import RegisterForm from "../../components/Forms/RegisterForm";
 
 import editarSvg from "../../assets/svg/dashboard/edit.svg";
 import deleteSvg from "../../assets/svg/dashboard/delete.svg";
+import useAuth from "../../hooks/useAuth";
+import formatDateToHHMM from "../../scripts/formatDateToRegister copy";
 
 const colConfig = [
-  { header: "ID", key: "id" },
-  { header: "Employee ID", key: "employeeId" },
-  { header: "Business ID", key: "businessId" },
-  { header: "Check-In Time", key: "checkInTime" },
-  { header: "Check-Out Time", key: "checkOutTime" },
+  {
+    header: "Fecha",
+    key: "checkInTime",
+    render: (data: Register) => (
+      <span>{formatDateToDDMMYY(data.checkInTime)}</span>
+    ),
+  },
+  {
+    header: "Check In",
+    key: "checkInTime",
+    render: (data: Register) => (
+      <span>{formatDateToHHMM(data.checkInTime)} hs</span>
+    ),
+  },
+  {
+    header: "Check Out",
+    key: "checkOutTime",
+    render: (data: Register) => (
+      <span>
+        {data.checkOutTime ? formatDateToHHMM(data.checkOutTime) : "-"} hs
+      </span>
+    ),
+  },
 ];
 
 const filtersConfig: FilterConfig = [
@@ -37,26 +58,19 @@ const filtersData = {
   businessId: "",
 };
 
-const actionConfig = (
-  handleEdit: (data: Register) => void,
-  handleDelete: (data: Register) => void
-) => [
-  {
-    icon: editarSvg,
-    onClick: handleEdit,
-  },
-  {
-    icon: deleteSvg,
-    onClick: handleDelete,
-  },
-];
-
 export default function RegisterTable() {
+  const sesion = useAuth();
   const registers = useRegister();
   const [rows, setRows] = useState<Register[]>([]);
   const [data, setData] = useState<Register>();
   const [form, setForm] = useState<boolean>(false);
   const [filter, setFilter] = useState(filtersData);
+
+  // Get users
+  useEffect(() => {
+    if (sesion.user?.id && registers.data.length === 0)
+      registers.get(sesion.user);
+  }, [sesion.user]);
 
   // Load data
   useEffect(() => {
@@ -76,8 +90,8 @@ export default function RegisterTable() {
 
   // Create new Register
   async function handleCreate(registerData: Register) {
-    if (!data) registers.create(registerData);
-    else registers.update(registerData);
+    if (!data) await registers.create(registerData);
+    else await registers.update(registerData);
   }
 
   // Update Register
@@ -100,9 +114,23 @@ export default function RegisterTable() {
   }
 
   // Delete Register
-  function handleDelete(data: Register) {
-    registers.deleteById(data.id!);
+  async function handleDelete(data: Register) {
+    await registers.deleteById(data.id!);
   }
+
+  const actionConfig = (
+    handleEdit: (data: Register) => void,
+    handleDelete: (data: Register) => void
+  ) => [
+    {
+      icon: editarSvg,
+      onClick: handleEdit,
+    },
+    {
+      icon: deleteSvg,
+      onClick: handleDelete,
+    },
+  ];
 
   return (
     <Dashboard title="Registros">

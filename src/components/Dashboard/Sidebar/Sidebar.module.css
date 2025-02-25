@@ -15,7 +15,7 @@
   width: max-content;
   height: 100%;
   border-right: 1px solid var(--border-color);
-  background-color: var(--panel-color);
+  background-color: var(--panel);
   transition: 0.5s;
 }
 
@@ -27,14 +27,13 @@
 .logoContainer {
   display: flex;
   justify-content: center;
-  height: var(--nabvar-height);
-  background-color: var(--primary-color);
+  align-items: center;
+  height: var(--navbar-height);
 }
 
 .logoContainer img {
   margin: auto;
-  height: 100%;
-  /* filter: var(--primary-filter); */
+  width: 80%;
 }
 
 .sidebar a {
@@ -69,6 +68,10 @@
 }
 
 @media screen and (min-width: 700px) {
+  .onlyDesktop {
+    display: flex !important;
+  }
+
   .sidebar {
     position: relative;
     left: 0;
@@ -78,20 +81,19 @@
     gap: 5px;
     width: 220px;
     border-right: 1px solid var(--border-color);
-    background-color: var(--panel-color);
+    background-color: var(--panel);
   }
 
   .logoContainer {
     display: flex;
     justify-content: center;
-    height: var(--nabvar-height);
-    background-color: var(--primary-color);
+    align-items: center;
+    height: var(--navbar-height);
   }
 
   .logoContainer img {
     margin: auto;
-    height: 100%;
-    /* filter: var(--primary-filter); */
+    width: 80%;
   }
 
   .sidebar a {
@@ -119,9 +121,5 @@
 
   .selected img {
     filter: var(--primary-filter);
-  }
-
-  .onlyDesktop {
-    display: flex !important;
   }
 }

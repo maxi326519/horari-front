@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { FilterConfig } from "../../components/Filters/Filters";
 import { useBusiness } from "../../hooks/useBusiness";
 import { Business } from "../../interfaces/Business";
+import { Users } from "../../interfaces/Users";
 
 import Table from "../../components/Table/Table";
 import Dashboard from "../../components/Dashboard/Dashboard";
@@ -12,31 +12,9 @@ import editarSvg from "../../assets/svg/dashboard/edit.svg";
 import deleteSvg from "../../assets/svg/dashboard/delete.svg";
 
 const colConfig = [
-  { header: "ID", key: "id" },
   { header: "Name", key: "name" },
-  { header: "Industry", key: "industry" },
-  { header: "Created At", key: "createdAt" },
-  { header: "Employees", key: "employees" },
-  { header: "Registers", key: "registers" },
+  { header: "Correo", key: "email" },
 ];
-
-const filtersConfig: FilterConfig = [
-  {
-    key: "name",
-    type: "text",
-    label: "Name",
-  },
-  {
-    key: "industry",
-    type: "text",
-    label: "Industry",
-  },
-];
-
-const filtersData = {
-  name: "",
-  industry: "",
-};
 
 const actionConfig = (
   handleEdit: (data: Business) => void,
@@ -54,27 +32,19 @@ const actionConfig = (
 
 export default function BusinessTable() {
   const businesses = useBusiness();
-  const [rows, setRows] = useState<Business[]>([]);
   const [data, setData] = useState<Business>();
   const [form, setForm] = useState<boolean>(false);
-  const [filter, setFilter] = useState(filtersData);
 
-  // Load data
+  // Get users
   useEffect(() => {
-    const newRows = businesses.data.filter((row) => {
-      if (filter.name && !row.name.toString().includes(filter.name.toString()))
-        return false;
-      if (filter.industry && row.industry !== filter.industry) return false;
-      return true;
-    });
-
-    setRows(newRows);
-  }, [businesses.data, filter]);
+    if (businesses.data.length === 0) businesses.get();
+  }, []);
 
   // Create new Business
-  async function handleCreate(businessData: Business) {
-    if (!data) businesses.create(businessData);
-    else businesses.update(businessData);
+  async function handleCreate(businessData: Business, user?: Users) {
+    if (!data && user) {
+      await businesses.create(businessData, user);
+    } else await businesses.update(businessData);
   }
 
   // Update Business
@@ -97,30 +67,27 @@ export default function BusinessTable() {
   }
 
   // Delete Business
-  function handleDelete(data: Business) {
-    businesses.deleteById(data.id!);
+  async function handleDelete(data: Business) {
+    await businesses.deleteById(data.id!);
   }
 
   return (
-    <Dashboard title="Negocios">
+    <Dashboard title="Empresas">
       <div className="relative flex flex-col gap-[10px] h-full p-[20px]">
         {form && (
           <BusinessForm
             data={data}
-            title={data ? "Editar negocio" : "Agregar negocio"}
+            title={data ? "Editar empresa" : "Agregar empresa"}
             onClose={handleForm}
             onSubmit={handleCreate}
           />
         )}
         <Controls
-          data={rows}
-          filters={filter}
-          filtersConfig={filtersConfig}
-          onFilter={setFilter}
-          btnConfig={[{ label: "Agregar negocio", onClick: handleForm }]}
+          data={businesses.data}
+          btnConfig={[{ label: "Agregar empresa", onClick: handleForm }]}
         />
         <Table
-          data={rows}
+          data={businesses.data}
           columns={colConfig}
           actions={actionConfig(handleEdit, handleDelete)}
         />

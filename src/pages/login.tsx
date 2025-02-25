@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   initLoginData,
@@ -9,7 +8,6 @@ import {
 import useAuth from "../hooks/useAuth";
 
 export default function Login() {
-  const redirect = useNavigate();
   const auth = useAuth();
   const [error, setError] = useState<LoginError>(initLoginError());
   const [user, setUser] = useState<LoginData>(initLoginData());
@@ -21,7 +19,7 @@ export default function Login() {
 
   function handleValidations(): boolean {
     const error: LoginError = initLoginError();
-    let isValid = false;
+    let isValid = true;
 
     // Email
     if (user.email === "") {
@@ -42,14 +40,16 @@ export default function Login() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-
-    redirect("/usuarios");
-
     if (handleValidations()) {
-      auth.login(user);
-    } else {
-      // Mostrar error si no se encuentra el usuario
-      setError({ ...error, password: "Credenciales inválidas" });
+      auth.login(user.email, user.password).catch((error) => {
+        if (error.message?.includes("User not found")) {
+          setError({ ...error, email: "El correo es incorrecto" });
+        } else if (error.message?.includes("Incorrect password")) {
+          setError({ ...error, password: "Contraseña incorrecta" });
+        } else {
+          console.log("Unknown error", error);
+        }
+      });
     }
   }
 
@@ -57,7 +57,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-red">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
+        className="bg-white p-6 rounded-lg w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
 
@@ -103,7 +103,12 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+          className={`w-full text-white py-2 rounded-md ${
+            Object.values(error).some((value) => value)
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+          }`}
+          disabled={Object.values(error).some((value) => value)}
         >
           Iniciar Sesión
         </button>

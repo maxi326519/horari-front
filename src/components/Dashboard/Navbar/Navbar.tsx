@@ -1,6 +1,4 @@
-import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
-import Swal from "sweetalert2";
 
 import styles from "./Navbar.module.css";
 import userSvg from "../../../assets/svg/user.svg";
@@ -15,22 +13,7 @@ interface Props {
 }
 
 export default function Navbar({ title, isOpen, onSidebar }: Props) {
-  const redirect = useNavigate();
   const auth = useAuth();
-  const handleLogout = () => {
-    Swal.fire({
-      text: "¿Seguro que desea cerrar sesión?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si",
-      cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        auth.logout();
-        redirect("/login");
-      }
-    });
-  };
 
   return (
     <nav className={styles.navbar}>
@@ -43,8 +26,23 @@ export default function Navbar({ title, isOpen, onSidebar }: Props) {
           <li>
             <b>Perfil</b>
           </li>
-          <li>{auth.sesion.name}</li>
-          <li onClick={handleLogout}>
+          <li>
+            <span
+              className={`block w-full text-center text-sm rounded-sm py-1 ${
+                auth.user?.rol === "Admin"
+                  ? "text-blue-500 bg-blue-100"
+                  : auth.user?.rol === "Empresa"
+                  ? "text-green-500 bg-green-100"
+                  : auth.user?.rol === "Empleado"
+                  ? "text-yellow-500 bg-yellow-100"
+                  : ""
+              }`}
+            >
+              {auth.user?.rol}
+            </span>
+          </li>
+          <li>{auth.user?.name}</li>
+          <li onClick={() => auth.logout()}>
             <img src={logoutSvg} alt="logout" /> <span>Cerrar sesion</span>
           </li>
         </ul>

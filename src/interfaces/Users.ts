@@ -12,6 +12,17 @@ export interface Users {
   registers?: Register[];
 }
 
+export interface Users {
+  id?: string;
+  name: string;
+  email: string;
+  password: string;
+  rol: UsersRol;
+  businessId?: string | null;
+  company?: Business;
+  registers?: Register[];
+}
+
 export enum UsersRol {
   ANY = "",
   ADMIN = "Admin",
@@ -26,11 +37,12 @@ export interface UsersError {
   rol: string;
 }
 
-export const initUser = (): Users => ({
+export const initUser = (data?: Partial<Users>): Users => ({
   name: "",
   email: "",
   password: "",
   rol: UsersRol.ANY,
+  ...data,
 });
 
 export const initUserError = (): UsersError => ({

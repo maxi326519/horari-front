@@ -24,13 +24,3 @@
   color: black;
   background-color: white;
 }
-
-.searchBar button {
-  border-radius: 0px 5px 5px 0px;
-  background-color: var(--primary-color);
-}
-
-.searchBar button img {
-  width: 20px;
-  filter: invert(100%);
-}

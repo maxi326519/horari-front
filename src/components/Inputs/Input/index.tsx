@@ -32,7 +32,7 @@ export default function Input({
   return (
     <div className={className}>
       <label className="block">
-        <span className="block text-sm font-medium text-slate-700">
+        <span className="block text-sm font-medium text-slate-600">
           {label}
         </span>
         <input

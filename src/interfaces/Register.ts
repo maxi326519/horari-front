@@ -1,14 +1,9 @@
-import { Business } from "./Business";
-import { Users } from "./Users";
-
 export interface Register {
   id?: string;
+  checkInTime: Date | null;
+  checkOutTime?: Date | null;
   employeeId: string;
   businessId: string;
-  checkInTime: string;
-  checkOutTime?: string | null;
-  employee?: Users;
-  company?: Business;
 }
 
 export interface RegisterError {
@@ -21,7 +16,7 @@ export interface RegisterError {
 export const initRegister = (): Register => ({
   employeeId: "",
   businessId: "",
-  checkInTime: "",
+  checkInTime: null,
   checkOutTime: null,
 });
 

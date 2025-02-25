@@ -44,7 +44,7 @@ export default function EmployeeForm({
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (handleValidations()) {
-      onSubmit(formData!);
+      onSubmit(formData!).then(() => onClose());
     }
   }
 
@@ -72,7 +72,7 @@ export default function EmployeeForm({
   }
 
   return (
-    <div className="absolute z-[1500] top-0 left-0 flex justify-center p-5 w-full h-full bg-[#4442]">
+    <div className="absolute z-[1000] top-0 left-0 flex justify-center p-5 w-full h-full bg-[#4442]">
       <form
         className="flex flex-col gap-5 w-96 p-5 h-max rounded border border-gray-300 bg-white"
         onSubmit={handleSubmit}

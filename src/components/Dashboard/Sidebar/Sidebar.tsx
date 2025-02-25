@@ -4,35 +4,45 @@ import useAuth from "../../../hooks/useAuth";
 
 import styles from "./Sidebar.module.css";
 import usersSvg from "../../../assets/svg/users.svg";
-// import logo from "../../../assets/img/logo.jpg";
+import employeeSvg from "../../../assets/svg/employee.svg";
+import businessSvg from "../../../assets/svg/business.svg";
+import registerSvg from "../../../assets/svg/register.svg";
+import logo from "../../../assets/img/logo.png";
 
 const items = [
   {
     svg: usersSvg,
+    path: "/inicio",
+    name: "Inicio",
+    rol: [UsersRol.EMPLOYEE],
+    mobile: true,
+  },
+  {
+    svg: usersSvg,
     path: "/usuarios",
     name: "Usuarios",
-    rol: UsersRol.ANY,
+    rol: [UsersRol.ADMIN],
     mobile: true,
   },
   {
-    svg: usersSvg,
+    svg: businessSvg,
     path: "/empresas",
     name: "Empresas",
-    rol: UsersRol.ANY,
+    rol: [UsersRol.ADMIN],
     mobile: true,
   },
   {
-    svg: usersSvg,
-    path: "/registros",
-    name: "Registros",
-    rol: UsersRol.ANY,
-    mobile: true,
-  },
-  {
-    svg: usersSvg,
+    svg: employeeSvg,
     path: "/empleados",
     name: "Empleados",
-    rol: UsersRol.ANY,
+    rol: [UsersRol.BUSINESS],
+    mobile: true,
+  },
+  {
+    svg: registerSvg,
+    path: "/registros",
+    name: "Registros",
+    rol: [UsersRol.EMPLOYEE, UsersRol.BUSINESS],
     mobile: true,
   },
 ];
@@ -49,27 +59,36 @@ export default function Sidebar({ isOpen }: Props) {
     return location.pathname.includes(path);
   }
 
+  function handleLogOut() {
+    auth.logout();
+  }
+
   return (
     <div className={`${styles.sidebar} ${isOpen ? "" : styles.close}`}>
       <div className={styles.logoContainer}>
-        {/* <img src={logo} alt="logo" /> */}
+        <img src={logo} alt="logo" />
       </div>
-      {items
-        .filter(
-          (item) =>
-            auth.sesion?.rol === UsersRol.ADMIN || item.rol === auth.sesion?.rol
-        )
-        .map((item) => (
-          <Link
-            to={item.path}
-            className={`${handleSelected(item.path) ? styles.selected : ""} ${
-              !item.mobile && styles.onlyDesktop
-            }`}
-          >
-            <img src={item.svg} alt={item.name} />
-            <span>{item.name}</span>
-          </Link>
-        ))}
+      <div className="grow flex flex-col">
+        {items
+          .filter((item) => auth.user && item.rol.includes(auth.user?.rol))
+          .map((item) => (
+            <Link
+              to={item.path}
+              className={`${handleSelected(item.path) ? styles.selected : ""} ${
+                !item.mobile && styles.onlyDesktop
+              }`}
+            >
+              <img src={item.svg} alt={item.name} />
+              <span>{item.name}</span>
+            </Link>
+          ))}
+      </div>
+      <div
+        className="felx justify-center items-center text-center p-4 border-t cursor-pointer"
+        onClick={handleLogOut}
+      >
+        <span>Cerrar sesión</span>
+      </div>
     </div>
   );
 }

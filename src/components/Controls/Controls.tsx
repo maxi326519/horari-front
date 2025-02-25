@@ -1,7 +1,6 @@
 import Filters, { FilterConfig } from "../Filters/Filters";
 
 import styles from "./Controls.module.css";
-import searchSvg from "../../assets/svg/search.svg";
 
 export type BtnConfig = Array<{
   label?: string;
@@ -31,7 +30,9 @@ export default function Controls<T>({
   onFilter,
 }: Props<T>) {
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    searchConfig && searchConfig.setValue(event.target.value);
+    if (searchConfig) {
+      searchConfig.setValue(event.target.value);
+    }
   }
 
   return (
@@ -45,9 +46,6 @@ export default function Controls<T>({
               value={searchConfig.value}
               onChange={handleSearch}
             />
-            <button>
-              <img src={searchSvg} alt="" />
-            </button>
           </div>
         )}
         {filtersConfig && onFilter && (

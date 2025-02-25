@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: var(--nabvar-height);
+  height: var(--navbar-height);
   padding: 0 10px;
   padding-left: 30px;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--panel-color);
+  background-color: var(--panel);
 }
 
 .navbar h2 {
@@ -59,7 +59,7 @@
     width: 50px;
     border-radius: 50px;
     outline: 1px solid var(--border-color);
-    background-color: var(--panel-color);
+    background-color: var(--panel);
     overflow: hidden;
   }
 

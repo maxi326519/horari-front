@@ -1,29 +1,30 @@
-import { Register } from "./Register";
-import { Users } from "./Users";
-
 export interface Business {
   id?: string;
   name: string;
-  industry: string;
+  state: BusinessState;
+  registred: boolean;
+  email: string;
   createdAt?: string;
-  employees?: Users[];
-  registers?: Register[];
+}
+
+export enum BusinessState {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
 
 export interface BusinessError {
   name: string;
-  industry: string;
+  email: string;
 }
 
 export const initBusiness = (): Business => ({
   name: "",
-  industry: "",
-  createdAt: "",
-  employees: [],
-  registers: [],
+  state: BusinessState.ACTIVE,
+  registred: false,
+  email: "",
 });
 
 export const initBusinessError = (): BusinessError => ({
   name: "",
-  industry: "",
+  email: "",
 });

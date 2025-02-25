@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FilterConfig } from "../../components/Filters/Filters";
 import { useUsers } from "../../hooks/useUsers";
-import { Users } from "../../interfaces/Users";
+import { Users, UsersRol } from "../../interfaces/Users";
 
 import Table from "../../components/Table/Table";
 import Dashboard from "../../components/Dashboard/Dashboard";
@@ -10,30 +10,25 @@ import UsersForm from "../../components/Forms/UserForm";
 
 import editarSvg from "../../assets/svg/dashboard/edit.svg";
 import deleteSvg from "../../assets/svg/dashboard/delete.svg";
+import useAuth from "../../hooks/useAuth";
 
 const colConfig = [
   { header: "Nombre", key: "name" },
   { header: "Correo", key: "email" },
   { header: "Rol", key: "rol" },
-  { header: "Empresa", key: "company?.name" },
 ];
 
 const filtersConfig: FilterConfig = [
   {
-    key: "name",
-    type: "text",
-    label: "Nombre",
-  },
-  {
-    key: "email",
-    type: "text",
-    label: "Correo",
+    key: "rol",
+    type: "select",
+    label: "Rol",
+    options: Object.values(UsersRol).filter((value) => value),
   },
 ];
 
 const filtersData = {
-  name: "",
-  email: "",
+  rol: "",
 };
 
 const actionConfig = (
@@ -51,30 +46,35 @@ const actionConfig = (
 ];
 
 export default function UsersTable() {
+  const sesion = useAuth();
   const users = useUsers();
   const [rows, setRows] = useState<Users[]>([]);
   const [data, setData] = useState<Users>();
   const [form, setForm] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState(filtersData);
+
+  // Get users
+  useEffect(() => {
+    if (sesion.user?.id && users.data.length === 0) users.get();
+  }, [sesion.user]);
 
   // Load data
   useEffect(() => {
     const newRows = users.data.filter((row) => {
       if (
-        filter.name &&
-        !row.name.toLowerCase().includes(filter.name.toLowerCase())
+        search &&
+        !row.name.toLowerCase().includes(search.toLowerCase()) &&
+        search &&
+        !row.email.toLowerCase().includes(search.toLowerCase())
       )
         return false;
-      if (
-        filter.email &&
-        !row.email.toLowerCase().includes(filter.email.toLowerCase())
-      )
-        return false;
+      if (filter.rol && row.rol !== filter.rol) return false;
       return true;
     });
 
     setRows(newRows);
-  }, [users.data, filter]);
+  }, [users.data, filter, search]);
 
   // Create or Update User
   async function handleCreate(userData: Users) {
@@ -113,6 +113,10 @@ export default function UsersTable() {
           />
         )}
         <Controls
+          searchConfig={{
+            value: search,
+            setValue: setSearch,
+          }}
           data={rows}
           filters={filter}
           filtersConfig={filtersConfig}

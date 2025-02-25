@@ -10,6 +10,7 @@ import EmployeeForm from "../../components/Forms/EmployeeForm";
 
 import editarSvg from "../../assets/svg/dashboard/edit.svg";
 import deleteSvg from "../../assets/svg/dashboard/delete.svg";
+import useAuth from "../../hooks/useAuth";
 
 const colConfig = [
   { header: "Nombre", key: "name" },
@@ -52,10 +53,16 @@ const actionConfig = (
 
 export default function EmployeesTable() {
   const users = useUsers();
+  const sesion = useAuth();
   const [rows, setRows] = useState<Users[]>([]);
   const [data, setData] = useState<Users>();
   const [form, setForm] = useState<boolean>(false);
   const [filter, setFilter] = useState(filtersData);
+
+  // Get users
+  useEffect(() => {
+    if (users.data.length === 0) users.get();
+  }, []);
 
   // Load data
   useEffect(() => {
@@ -80,8 +87,9 @@ export default function EmployeesTable() {
 
   // Create or Update User
   async function handleCreate(userData: Users) {
-    if (!data) users.create(userData);
-    else users.update(userData);
+    if (!data)
+      await users.create({ ...userData, businessId: sesion.user?.businessId });
+    else await users.update(userData);
   }
 
   // Edit User
@@ -99,17 +107,17 @@ export default function EmployeesTable() {
   }
 
   // Delete User
-  function handleDelete(data: Users) {
-    users.deleteById(data.id!);
+  async function handleDelete(data: Users) {
+    await users.deleteById(data.id!);
   }
 
   return (
-    <Dashboard title="Usuarios Empleados">
+    <Dashboard title="Empleados">
       <div className="relative flex flex-col gap-[10px] h-full p-[20px]">
         {form && (
           <EmployeeForm
             data={data}
-            title={data ? "Editar usuario" : "Agregar usuario"}
+            title={data ? "Editar empleado" : "Agregar empleado"}
             onClose={handleForm}
             onSubmit={handleCreate}
           />
@@ -119,7 +127,7 @@ export default function EmployeesTable() {
           filters={filter}
           filtersConfig={filtersConfig}
           onFilter={setFilter}
-          btnConfig={[{ label: "Agregar usuario", onClick: handleForm }]}
+          btnConfig={[{ label: "Agregar empleado", onClick: handleForm }]}
         />
         <Table
           data={rows}

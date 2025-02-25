@@ -1,0 +1,41 @@
+:root {
+  --navbar-height: 80px;
+  --border: 1px;
+  --radius: 10px;
+
+  --backgound: #ddd;
+  --panel: #fff;
+  --border-color: #ccc;
+  --primary-color: #007bff;
+  --primary-color-low: #007bff22;
+  --primary-filter: invert(29%) sepia(98%) saturate(2667%) hue-rotate(201deg)
+    brightness(104%) contrast(105%);
+  --primary-filter: "";
+}
+
+.dark {
+  --backgound: #333;
+  --panel: #444;
+  --border-color: #555;
+  --primary-color: #1e90ff;
+  --primary-color-low: #1e90ff22;
+  --primary-filter: "brightness(0.8)";
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
